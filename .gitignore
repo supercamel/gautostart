@@ -1,0 +1,12 @@
+# Meson/CMake build outputs
+/build*/
+/build-*/
+
+# SQGI demo package outputs
+/demo/sqgi-autostart/build-*/
+/demo/sqgi-autostart/dist-*/
+
+# Local editor and OS noise
+*~
+*.swp
+.DS_Store

@@ -1,0 +1,13 @@
+option(
+  'introspection',
+  type: 'feature',
+  value: 'enabled',
+  description: 'Build GObject Introspection metadata',
+)
+
+option(
+  'portal',
+  type: 'feature',
+  value: 'auto',
+  description: 'Use libportal for sandboxed Linux autostart requests',
+)

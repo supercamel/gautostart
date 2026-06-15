@@ -1,0 +1,134 @@
+{
+  "name": "GAutostartSqgiDemo",
+  "app_id": "io.github.supercamel.GAutostartSqgiDemo",
+  "icon": "assets/sqgi_icon.png",
+  "desktop_terminal": false,
+  "desktop_categories": [
+    "Utility"
+  ],
+  "script": "main.nut",
+  "target": "all",
+  "script_dirs": [
+    "."
+  ],
+  "resources": [
+    "assets"
+  ],
+  "gtk_data": [
+    "icons"
+  ],
+  "native_projects": [
+    {
+      "name": "gautostart",
+      "dir": "../..",
+      "build": [
+        "meson setup build-sqgi-demo --wipe -Dportal=disabled -Dintrospection=enabled || meson setup build-sqgi-demo -Dportal=disabled -Dintrospection=enabled",
+        "meson compile -C build-sqgi-demo"
+      ],
+      "libraries": [
+        "build-sqgi-demo/libgautostart-1.0.so",
+        "build-sqgi-demo/libgautostart-1.0.so.0",
+        "build-sqgi-demo/libgautostart-1.0.so.0.0.0"
+      ],
+      "typelibs": [
+        "build-sqgi-demo/GAutostart-1.0.typelib"
+      ]
+    }
+  ],
+  "linux": {
+    "deb": {
+      "download": true,
+      "suite": "noble",
+      "packages": [
+        "libgtk-4-1",
+        "gir1.2-gtk-4.0",
+        "libglib2.0-0",
+        "libglib2.0-dev",
+        "gobject-introspection",
+        "libgirepository-1.0-1"
+      ]
+    },
+    "arches": [
+      {
+        "arch": "x86_64",
+        "build_dir": "build-linux-x86_64",
+        "inherit_native_projects": false,
+        "build": [
+          "cmake -E rm -rf \"$SQGI_LINUX_BUILD_DIR\"",
+          "cmake -S \"$SQGI_SOURCE_DIR\" -B \"$SQGI_LINUX_BUILD_DIR\" -G Ninja ${SQGI_LINUX_CMAKE_TOOLCHAIN:+-DCMAKE_TOOLCHAIN_FILE=\"$SQGI_LINUX_CMAKE_TOOLCHAIN\"} -DCMAKE_BUILD_TYPE=Release -DSQ_ENABLE_JIT=ON",
+          "cmake --build \"$SQGI_LINUX_BUILD_DIR\""
+        ],
+        "native_projects": [
+          {
+            "name": "gautostart",
+            "dir": "../..",
+            "build": [
+              "meson setup build-linux-x86_64 --wipe --prefix \"$SQGI_LINUX_PREFIX\" --libdir \"lib/$SQGI_LINUX_TRIPLET\" --buildtype=release -Dportal=disabled -Dintrospection=disabled ${SQGI_LINUX_MESON_CROSS_FILE:+--cross-file \"$SQGI_LINUX_MESON_CROSS_FILE\"} || meson setup build-linux-x86_64 --prefix \"$SQGI_LINUX_PREFIX\" --libdir \"lib/$SQGI_LINUX_TRIPLET\" --buildtype=release -Dportal=disabled -Dintrospection=disabled ${SQGI_LINUX_MESON_CROSS_FILE:+--cross-file \"$SQGI_LINUX_MESON_CROSS_FILE\"}",
+              "meson compile -C build-linux-x86_64",
+              "env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --wipe --buildtype=release -Dportal=disabled -Dintrospection=enabled || env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --buildtype=release -Dportal=disabled -Dintrospection=enabled",
+              "env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=\"$HOME\" meson compile -C build-host GAutostart-1.0.typelib"
+            ],
+            "libraries": [
+              "build-linux-x86_64/libgautostart-1.0.so",
+              "build-linux-x86_64/libgautostart-1.0.so.0",
+              "build-linux-x86_64/libgautostart-1.0.so.0.0.0"
+            ],
+            "typelibs": [
+              "build-host/GAutostart-1.0.typelib"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "windows": {
+    "msys2_prefix": "mingw64",
+    "console": false,
+    "build_dir": "build-windows-x86_64",
+    "packages": [
+      "mingw-w64-x86_64-glib2",
+      "mingw-w64-x86_64-gobject-introspection",
+      "mingw-w64-x86_64-gobject-introspection-runtime",
+      "mingw-w64-x86_64-libffi",
+      "mingw-w64-x86_64-gtk4",
+      "mingw-w64-x86_64-meson",
+      "mingw-w64-x86_64-ninja",
+      "mingw-w64-x86_64-pkgconf"
+    ],
+    "gdk_backend": "win32",
+    "build": [
+      "cmake -E rm -rf \"$SQGI_WINDOWS_BUILD_DIR\"",
+      "cmake -S \"$SQGI_SOURCE_DIR\" -B \"$SQGI_WINDOWS_BUILD_DIR\" -G Ninja -DCMAKE_TOOLCHAIN_FILE=\"$SQGI_WIN_CMAKE_TOOLCHAIN\" -DCMAKE_BUILD_TYPE=Release -DSQ_ENABLE_JIT=ON",
+      "cmake --build \"$SQGI_WINDOWS_BUILD_DIR\" --target sqgi sqgi-bin"
+    ],
+    "native_projects": [
+      {
+        "name": "gautostart",
+        "dir": "../..",
+        "build": [
+          "meson setup build-windows-x86_64 --wipe --prefix \"$SQGI_WINDOWS_PREFIX\" --buildtype=release -Dportal=disabled -Dintrospection=disabled --cross-file \"$SQGI_MESON_CROSS_FILE\" || meson setup build-windows-x86_64 --prefix \"$SQGI_WINDOWS_PREFIX\" --buildtype=release -Dportal=disabled -Dintrospection=disabled --cross-file \"$SQGI_MESON_CROSS_FILE\"",
+          "meson compile -C build-windows-x86_64",
+          "env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --wipe --buildtype=release -Dportal=disabled -Dintrospection=enabled || env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=\"$HOME\" meson setup build-host --buildtype=release -Dportal=disabled -Dintrospection=enabled",
+          "env -i PATH=/usr/local/bin:/usr/bin:/bin HOME=\"$HOME\" meson compile -C build-host GAutostart-1.0.gir",
+          "sed 's/shared-library=\"[^\"]*\"/shared-library=\"libgautostart-1.0-0.dll\"/' build-host/GAutostart-1.0.gir > build-host/GAutostart-1.0.windows.gir",
+          "g-ir-compiler build-host/GAutostart-1.0.windows.gir --output build-host/GAutostart-1.0.windows.typelib --includedir=/usr/share/gir-1.0"
+        ],
+        "libraries": [
+          "build-windows-x86_64/libgautostart-1.0-0.dll"
+        ],
+        "typelibs": [
+          "build-host/GAutostart-1.0.windows.typelib"
+        ]
+      }
+    ],
+    "nsis_options": {
+      "installer_name": "GAutostartSqgiDemo-Setup.exe",
+      "install_dir": "$LOCALAPPDATA\\Programs\\GAutostartSqgiDemo",
+      "request_execution_level": "user",
+      "desktop_shortcut": true,
+      "start_menu_shortcut": true,
+      "start_menu_folder": "GAutostartSqgiDemo",
+      "uninstall_registry": true
+    }
+  }
+}
