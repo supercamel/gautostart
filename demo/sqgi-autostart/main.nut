@@ -12,6 +12,7 @@ local system = import("system")
 
 const APP_ID = "io.github.supercamel.GAutostartSqgiDemo"
 const APP_NAME = "SQGI Autostart Demo"
+const PACKAGE_NAME = "GAutostartSqgiDemo"
 local PACKAGE_ICON_NAME = APP_ID
 
 local UI = {
@@ -145,10 +146,15 @@ function default_command() {
     local sqgi_bin = null
     local appdir = system.env.get("SQGI_APPDIR")
     if (appdir != null && appdir != "") {
-        if (system.os.family == "windows")
+        if (system.os.family == "windows") {
+            local launcher = GLib.build_filenamev([appdir, PACKAGE_NAME + ".exe"])
+            if (file_exists(launcher))
+                return [launcher, "--autostart"]
+
             sqgi_bin = GLib.build_filenamev([appdir, "bin", "sqgi.exe"])
-        else
+        } else {
             sqgi_bin = GLib.build_filenamev([appdir, "usr", "bin", "sqgi"])
+        }
     }
 
     if (sqgi_bin == null || sqgi_bin == "")
