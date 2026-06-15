@@ -1,6 +1,8 @@
 # Meson/CMake build outputs
 /build*/
 /build-*/
+/docs/_build/
+/.venv-docs/
 
 # SQGI demo package outputs
 /demo/sqgi-autostart/build-*/

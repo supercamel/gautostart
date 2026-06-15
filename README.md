@@ -31,6 +31,15 @@ meson setup build -Dportal=auto
 meson setup build-no-portal -Dportal=disabled
 ```
 
+## Documentation
+
+The Read the Docs/Sphinx documentation lives in `docs/`.
+
+```sh
+python -m pip install -r docs/requirements.txt
+python -m sphinx -W -b html docs docs/_build/html
+```
+
 ## C API Sketch
 
 ```c
